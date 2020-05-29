@@ -2,7 +2,9 @@ version: "3"
 services: 
     crawler-web:
         image: crawler-web:latest
+        container_name: crawlerWeb
         volumes: 
-            - ./aria2_web/logs:/aria2_web/logs
+            - ./crawler_web/logs:/crawler_web/logs
+            - ./default:/etc/nginx/sites-available/default
         ports: 
-            - 80:5000
+            - 8080:80
