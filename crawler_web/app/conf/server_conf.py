@@ -4,8 +4,8 @@
 # @Author: shangyameng
 # @Email: shangyameng@aliyun.com
 # @Date: 2020-04-08 22:56:46
-# @LastEditTime: 2020-04-23 20:39:32
-# @FilePath: /crawler_web/app/conf/server_conf.py
+# @LastEditTime: 2020-05-29 14:15:17
+# @FilePath: /crawlerWeb/crawler_web/app/conf/server_conf.py
 
 import random
 import os
@@ -84,7 +84,7 @@ class Config(object):
     CACHE_REDIS_DB = 1
 
     # token有效期
-    TOKEN_LIFETIME = 3600 * 24 + random.randint(0, 1000)
+    TOKEN_LIFETIME = 1800
 
     # 路由白名单
     URL_WHITE_LIST = {
