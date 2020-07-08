@@ -8,7 +8,7 @@
 # @FilePath: /crawler_web/app/crawler/zeroMag.py
 from abc import ABC
 
-from app.conf.server_conf import zeroMagUrl
+from app.conf.extensions_conf import zeroMagUrl
 from app.extensions.crawler.crawler import CrawlerBase
 import requests
 import lxml.html

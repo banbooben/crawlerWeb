@@ -37,4 +37,4 @@ RUN mv ./default /etc/nginx/sites-available/default
 #    && /usr/sbin/nginx -s reload
 
 #CMD python3 /crawler_web/manage.py runserver -h 0.0.0.0 -p 5000 --threaded
-CMD uwsgi --ini /crawler_web/uwsgi.ini && nginx -g "daemon off;"
+CMD sh /crawler_web init_database.sh && uwsgi --ini /crawler_web/uwsgi.ini && nginx -g "daemon off;"

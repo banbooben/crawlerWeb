@@ -6,6 +6,7 @@
 # @Time    : 2020/5/23 23:50
 # @desc:
 
+from .log import Logger
 from flask import current_app
 
 

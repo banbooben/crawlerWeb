@@ -35,10 +35,16 @@ class Aria2(object):
         return "http://{}:{}/jsonrpc".format(self.host, self.port)
 
     def _request_post(self, request_data, headers=None):
+        """
 
-        # @description: post请求，并组装数据
-        # @param {type}
-        # @return:
+        Args:
+            request_data:
+            headers:
+
+        Returns:
+
+        """
+
         try:
             response = requests.post(url=self.url,
                                      data=json.dumps(request_data),
@@ -82,7 +88,7 @@ class Aria2(object):
         except Exception as e:
             current_app.logger.error(e)
 
-    def queryAllActiveInfomations(self):
+    def queryAllActiveInformation(self):
 
         # @description: 查询所有正在下载的文件
         # @param {type}
@@ -108,7 +114,7 @@ class Aria2(object):
         except Exception as e:
             current_app.logger.error(e)
 
-    def queryAllStoppedInfomations(self):
+    def queryAllStoppedInformation(self):
 
         # @description: 查询所有已停止或已下载的文件
         # @param {type}
@@ -137,7 +143,7 @@ class Aria2(object):
         except Exception as e:
             current_app.logger.error(e)
 
-    def queryAllWaitingInfomations(self):
+    def queryAllWaitingInformation(self):
 
         # @description: 查询所有暂停的文件
         # @param {type}

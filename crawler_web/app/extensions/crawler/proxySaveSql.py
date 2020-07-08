@@ -10,7 +10,7 @@
 
 from abc import ABC
 from flask import current_app
-from app.conf.server_conf import proxyUrl, proxyUrlFront
+from app.conf.extensions_conf import proxyUrl, proxyUrlFront
 from app.extensions.crawler.crawler import CrawlerBase
 import requests
 import lxml.html

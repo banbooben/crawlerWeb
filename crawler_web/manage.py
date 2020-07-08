@@ -11,9 +11,9 @@
 from flask_script import Manager
 from flask_migrate import MigrateCommand
 from flask import jsonify, render_template
-
 from app import init_app
-from app.conf.server_conf import HTTP_PORT, HTTP_HOST, current_environment
+from app.conf.server_conf import current_environment
+from app.conf.extensions_conf import HTTP_HOST, HTTP_PORT
 
 app = init_app(current_environment)
 manager = Manager(app)
@@ -26,5 +26,5 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host=HTTP_HOST, port=HTTP_PORT, debug=True)
-    # manager.run()
+    # app.run(host=HTTP_HOST, port=HTTP_PORT, debug=True)
+    manager.run()

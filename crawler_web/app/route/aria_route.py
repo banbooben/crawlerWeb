@@ -8,7 +8,7 @@
 from flask import render_template
 from flask import redirect, Blueprint, current_app
 
-aria = Blueprint("aria", __name__, static_folder='../static', static_url_path='../static')
+aria = Blueprint("aria", __name__, static_folder='../static/aria', static_url_path='../static/aria')
 
 
 @aria.route('/')

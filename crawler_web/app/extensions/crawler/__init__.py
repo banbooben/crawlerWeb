@@ -10,3 +10,8 @@
 from .dytt import DyHeavenCrawler
 from .proxy import ProxyCrawler
 from .zeroMag import ZeroCrawler
+
+
+class TaskFunctions(object):
+    pass
+

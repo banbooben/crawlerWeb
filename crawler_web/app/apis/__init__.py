@@ -11,6 +11,7 @@ from flask_restful import Api
 from .aria import AriaAPI
 from .crawlers import CrawlerAPI
 from .testApi import TestApi
+from .redisTest import RedisTest
 
 # 配置路由地址
 """
@@ -23,6 +24,7 @@ DEFAULT_RESOURCE = (
     (AriaAPI, '/api/aria2/'),
     (CrawlerAPI, '/api/crawler/'),
     (TestApi, '/api/test/'),
+    (RedisTest, '/api/redis/'),
 )
 
 

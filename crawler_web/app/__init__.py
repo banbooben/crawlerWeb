@@ -10,9 +10,10 @@
 from flask import Flask
 from flask_cors import CORS
 from .extensions import config_extensions
+# from .extensions.my_logger.extensions_log import handler
+from .application import logger
 from .apis import config_resource
 from .conf.server_conf import config
-from .extensions import handler
 from .route import route_extensions
 
 
@@ -27,11 +28,12 @@ def init_app(config_name='default'):
     # 设置跨域
     flask_app.config["JSON_AS_ASCII"] = False
     CORS(flask_app, supports_credentials=True)
+
     # 配置蓝本路由
     route_extensions(flask_app)
 
     # 配置日志
-    flask_app.logger.addHandler(handler)
+    flask_app.logger.addHandler(logger)
 
     # 配置api接口
     config_resource(flask_app)

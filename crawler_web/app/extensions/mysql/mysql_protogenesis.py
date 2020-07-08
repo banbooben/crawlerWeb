@@ -8,9 +8,9 @@
 # @FilePath: /crawler_web/app/extensions/extensions_log.py
 
 import pymysql.cursors
-from app.common.decorators import Singleton, time_func
-from app.extensions import logger
-from app.conf.server_conf import HTTP_PORT, HTTP_HOST, current_environment, config
+from app.common.decorators import Singleton, Decorator
+from app.application import logger
+from app.conf.server_conf import current_environment, config
 
 
 @Singleton
@@ -25,7 +25,13 @@ class PyMysql(object):
         # self.cursorclass = pymysql.cursors.DictCursor
         # self.connection, self.cursor = self._connectAndGetCursor()
 
-    @time_func
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    @Decorator.time_func
     def connectAndGetCursor(self):
         """
         创建连接并初始化游标
@@ -46,7 +52,7 @@ class PyMysql(object):
             logger.error(e)
             return "None", "None"
 
-    @time_func
+    @Decorator.time_func
     def executeByInsOrUpdOrDel(self,
                                connection,
                                cursor,
@@ -82,7 +88,7 @@ class PyMysql(object):
             connection.roback()
             return None
 
-    @time_func
+    @Decorator.time_func
     def executeBySelect(self, connection, cursor, sql: str):
         try:
 
@@ -99,7 +105,7 @@ class PyMysql(object):
             logger.error(e)
             return []
 
-    # @time_func
+    # @Decorator.time_func
     # def executemanyByInsertOrUpdate(self, connection, cursor, sql: str,
     #                                 args: list):
     #     """

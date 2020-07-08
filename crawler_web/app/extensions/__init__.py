@@ -9,19 +9,22 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from app.extensions.pyaria2c.aria2 import Aria2
-from ..conf.server_conf import aria_token, aria_port, aria_host
-from app.extensions.my_logger.extensions_log import handler
-from app.extensions.my_logger import MyLogger
-"""
-数据库管理配置文件
-"""
+from flask_cache import Cache
+#
+from app.conf.server_conf import get_redis_config
+from app.conf.server_conf import current_config
+host, port, database, decode_responses, redis_password, cache_type = get_redis_config(current_config)
 
 # 创建数据库管理对象db
 db = SQLAlchemy()
 migrate = Migrate(db=db)
-aria2_downloader = Aria2(aria_host, aria_port, aria_token)
-logger = MyLogger()
+cache = Cache(
+    config={"CACHE_TYPE": cache_type,
+            "CACHE_REDIS_HOST": host,
+            "CACHE_REDIS_PORT": port,
+            "CACHE_REDIS_DB": database,
+            "DECODE_RESPONSES": decode_responses,
+            "CACHE_REDIS_PASSWORD": redis_password})
 
 
 # 初始化
@@ -33,3 +36,4 @@ def config_extensions(app):
     """
     db.init_app(app)
     migrate.init_app(app)
+    cache.init_app(app)

@@ -10,7 +10,7 @@ import threading
 import time
 from functools import wraps
 from flask import current_app
-from app.extensions import logger
+from app.application import logger
 
 # def Singleton(cls):
 #     """
@@ -28,8 +28,8 @@ from app.extensions import logger
 def Singleton(cls):
     """
     类装饰器，实现基于线程安全的单例模式
-    :param cls: 
-    :return: 
+    :param cls:
+    :return:
     """
     def synchronized(func):
         """
@@ -55,14 +55,16 @@ def Singleton(cls):
     return _singleton
 
 
-def time_func(func):
-    @wraps(func)
-    def _wrap(*args, **kwargs):
-        st = time.time()
-        rst = func(*args, **kwargs)
-        et = time.time()
-        output_str = "func: '{}' time: {}s".format(func.__name__, et - st)
-        logger.info(output_str)
-        return rst
+class Decorator(object):
+    @classmethod
+    def time_func(cls, func):
+        @wraps(func)
+        def _wrap(*args, **kwargs):
+            st = time.time()
+            rst = func(*args, **kwargs)
+            et = time.time()
+            output_str = "func: '{}' time: {}s".format(func.__name__, et - st)
+            logger.info(output_str)
+            return rst
 
-    return _wrap
+        return _wrap

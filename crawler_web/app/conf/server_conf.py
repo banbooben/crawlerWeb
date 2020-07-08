@@ -10,27 +10,7 @@
 import random
 import os
 
-# http conf
-HTTP_HOST = '0.0.0.0'
-HTTP_PORT = 9527
-aria_host = "127.0.0.1"
-aria_port = "6800"
-aria_token = "test"
-
-# 0mag.net请求地址
-zeroMagUrl = 'https://0mag.net/search'
-
-# 电影天堂请求地址
-dyttUrl = 'https://www.dy2018.com'
-
-# 西刺代理请求地址
-proxyUrl = {
-    "高匿": "https://www.xicidaili.com/nn/4052",
-    # "普通": "https://www.xicidaili.com/nt/",
-    # "qq": "https://www.xicidaili.com/qq"
-}
-# 西刺代理地址拼接头
-proxyUrlFront = "https://www.xicidaili.com/"
+current_environment = "testing"
 
 
 def get_databases_url(var_data):
@@ -42,7 +22,7 @@ def get_databases_url(var_data):
     USER = var_data.get('USER', 'root')
     PASSWORD = var_data.get('PASSWORD', 'shang.666')
     HOST = var_data.get('HOST', '127.0.0.1')
-    PORT = var_data.get('PORT', '3306')
+    PORT = var_data.get('PORT', '33061')
     DATABASE = var_data.get('DATABASE', 'crawler')
 
     return 'mysql+pymysql://{}:{}@{}:{}/{}'.format(USER, PASSWORD, HOST, PORT,
@@ -58,10 +38,20 @@ def get_mysql_info(var_data):
     USER = var_data.get('USER', 'root')
     PASSWORD = var_data.get('PASSWORD', 'shang.666')
     HOST = var_data.get('HOST', '127.0.0.1')
-    PORT = var_data.get('PORT', '3306')
+    PORT = var_data.get('PORT', '33061')
     DATABASE = var_data.get('DATABASE', 'crawler')
 
     return USER, PASSWORD, HOST, PORT, DATABASE
+
+
+def get_redis_config(var_data):
+    host = var_data.CACHE_REDIS_HOST
+    port = var_data.CACHE_REDIS_PORT
+    database = var_data.CACHE_REDIS_DB
+    decode_responses = var_data.DECODE_RESPONSES
+    redis_password = var_data.CACHE_REDIS_PASSWORD
+    cache_type = var_data.CACHE_TYPE
+    return host, port, database, decode_responses, redis_password, cache_type
 
 
 # 配置基类
@@ -70,7 +60,7 @@ class Config(object):
     配置基类
     """
     # 密钥
-    SECRET_KEY = '123456'
+    SECRET_KEY = 'aliksuydgi/ekjh$gawel;isvnurio'
 
     # 数据库的配置
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # 配置自动提交
@@ -82,6 +72,8 @@ class Config(object):
     CACHE_REDIS_HOST = '127.0.0.1'
     CACHE_REDIS_PORT = 6379
     CACHE_REDIS_DB = 1
+    CACHE_REDIS_PASSWORD = 123456
+    CACHE_DEFAULT_TIMEOUT = 1800
 
     # token有效期
     TOKEN_LIFETIME = 1800
@@ -90,7 +82,9 @@ class Config(object):
     URL_WHITE_LIST = {
         '/': ['GET'],
         '/api/seed/': ['GET', 'POST'],
-        '/auth/': ['POST']
+        '/auth/': ['POST'],
+        '/api/aria/': ['GET'],
+        '/api/test/': ['GET', "POST"]
     }
 
     # 通知邮箱配置
@@ -107,28 +101,51 @@ class DevelopConfig(Config):
         'USER': 'root',
         'PASSWORD': os.getenv('MYSQL_PASSWORD', 'shang.666'),
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'PORT': '33061',
         'DATABASES': 'crawler'
     }
+
+    # 缓存
+    CACHE_TYPE = 'redis'
+    CACHE_REDIS_HOST = '127.0.0.1'
+    CACHE_REDIS_PORT = 63791
+    CACHE_REDIS_DB = 1
+    DECODE_RESPONSES = True
+    CACHE_REDIS_PASSWORD = 123456
     SQLALCHEMY_DATABASE_URI = get_databases_url(DATABASES)
 
 
 # 测试环境配置
 class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'TESTING'
+    DATABASES = {
+        'USER': 'root',
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'shang.666'),
+        'HOST': '127.0.0.1',
+        'PORT': '33061',
+        'DATABASES': 'crawler'
+    }
 
-
-# 生产环境配置
-class ProductConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'PRODUCT'
+    # 缓存
+    CACHE_TYPE = 'redis'
+    CACHE_REDIS_HOST = '127.0.0.1'
+    CACHE_REDIS_PORT = 63791
+    CACHE_REDIS_DB = 1
+    DECODE_RESPONSES = True
+    CACHE_REDIS_PASSWORD = 123456
+    # decode_responses = True
+    SQLALCHEMY_DATABASE_URI = get_databases_url(DATABASES)
 
 
 config = {
     'develop': DevelopConfig,
     'testing': TestingConfig,
-    'product': ProductConfig,
     # 默认环境
     'default': DevelopConfig
 }
 
-current_environment = "default"
+current_config = config[current_environment]
+
+# if __name__ == "__main__":
+#     current_environment = "default"
+#     res = get_mysql_info(config[current_environment].DATABASES)
+#     print(res)

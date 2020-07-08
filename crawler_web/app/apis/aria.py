@@ -9,7 +9,7 @@
 
 from flask import request, current_app, render_template
 from flask_restful import Resource
-from ..extensions import aria2_downloader, logger
+from ..application import aria2_downloader, logger
 from app.extensions.crawler.zeroMag import ZeroCrawler
 from app.models.dytt_model import DyHeaven
 from app.models.proxy_model import Proxy
