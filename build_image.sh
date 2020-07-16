@@ -12,10 +12,10 @@ mkdir ./${docker_app}
 cp ./requirements.txt ./${docker_app}/requirements.txt
 cp ./default ./${docker_app}/default
 cp ./init_database.sh ./${docker_app}/init_databases.sh
-#cp ./uwsgi.ini ./${docker_app}/uwsgi.ini
 cp -R ./crawler_web/ ./${docker_app}/
 cd ./${docker_app} && rm -f ./logs/* && cd ..
-docker build -t crawler_web:latest .
+time=$(date "+%Y%m%d%H%M%S")
+docker build -t crawler_web:"release_${time}" .
 
 rm -rf ./${docker_app}
 

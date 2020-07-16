@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM lnpy3:latest
 
 RUN mkdir /crawler_web
 WORKDIR /crawler_web
@@ -18,19 +18,18 @@ COPY ./docker_app/ /crawler_web/
 #    && ln -s /usr/local/bin/python3 /usr/bin/python
 
 
-RUN apt-get update \
-    && mkdir -p /var/www/html \
-    && apt-get install -y python3.7 \
-                        python3-dev \
-                        python3-pip \
-                        nginx \
-    && apt-get clean \
-    && apt-get autoclean \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update \
+#    && mkdir -p /var/www/html \
+#    && apt-get install -y python3.7 \
+#                        python3-dev \
+#                        python3-pip \
+#                        nginx \
+#    && apt-get clean \
+#    && apt-get autoclean \
+#    && rm -rf /var/lib/apt/lists/*
 
-RUN chmod -R 777 /crawler_web/ \
-    && cd /crawler_web \
-    && pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN chmod -R 777 /crawler_web/ && cd /crawler_web
+RUN pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 RUN mv ./default /etc/nginx/sites-available/default
 #    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \

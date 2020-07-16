@@ -9,9 +9,9 @@ from flask import current_app
 
 from app.extensions import db
 from app.extensions.pyaria2c.aria2 import Aria2
-from app.extensions.my_logger import Logger
 from app.extensions.sql import cache_redis
 from app.extensions import cache
+from app.conf import logger
 
 from app.conf.extensions_conf import aria_token, aria_port, aria_host
 
@@ -20,4 +20,3 @@ from app.conf.extensions_conf import aria_token, aria_port, aria_host
 """
 
 aria2_downloader = Aria2(aria_host, aria_port, aria_token)
-logger = Logger(4)
