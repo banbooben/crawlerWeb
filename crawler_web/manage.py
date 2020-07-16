@@ -25,6 +25,11 @@ def index():
     return render_template("index.html")
 
 
+@app.before_request
+def aa():
+    pass
+
+
 if __name__ == "__main__":
     # app.run(host=HTTP_HOST, port=HTTP_PORT, debug=True)
     manager.run()

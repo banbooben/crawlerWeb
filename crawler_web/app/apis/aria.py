@@ -7,12 +7,11 @@
 # @LastEditTime: 2020-04-23 20:50:01
 # @FilePath: /crawler_web/app/apis/aria.py
 
-from flask import request, current_app, render_template
+from flask import request
 from flask_restful import Resource
-from ..application import aria2_downloader, logger
+from app.common.application import aria2_downloader, logger
 from app.extensions.crawler.zeroMag import ZeroCrawler
-from app.models.dytt_model import DyHeaven
-from app.models.proxy_model import Proxy
+
 
 # from ..extensions import db
 # from flask import current_app

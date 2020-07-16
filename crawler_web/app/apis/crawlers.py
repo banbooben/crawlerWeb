@@ -10,7 +10,7 @@ from flask import request, current_app
 from flask_restful import Resource
 
 from app.extensions.crawler import *
-from app.application import db, logger
+from app.common.application import logger
 from app.models import *
 
 

@@ -11,7 +11,7 @@ from flask import Flask
 from flask_cors import CORS
 from .extensions import config_extensions
 # from .extensions.my_logger.extensions_log import handler
-from .application import logger
+from app.common.application import logger
 from .apis import config_resource
 from .conf.server_conf import config
 from .route import route_extensions

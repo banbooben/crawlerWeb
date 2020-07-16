@@ -6,19 +6,19 @@
 # @Time    : 2020/5/23 23:50
 # @desc:
 
-from .log import Logger
+from .my_log import Logger
 from flask import current_app
 
 
-class MyLogger(object):
-    def info(self, message):
-        return current_app.logger.info(message)
-
-    def error(self, message):
-        return current_app.logger.info(message)
-
-    def debug(self, message):
-        return current_app.logger.info(message)
-
-    def warning(self, message):
-        return current_app.logger.info(message)
+# class MyLogger(object):
+#     def info(self, message):
+#         return current_app.logger.info(message)
+#
+#     def error(self, message):
+#         return current_app.logger.info(message)
+#
+#     def debug(self, message):
+#         return current_app.logger.info(message)
+#
+#     def warning(self, message):
+#         return current_app.logger.info(message)

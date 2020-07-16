@@ -4,18 +4,18 @@ RUN mkdir /crawler_web
 WORKDIR /crawler_web
 COPY ./docker_app/ /crawler_web/
 
-# RUN apt-get update \
-#     && apt-get install -y wget gcc make zlib1g-dev libbz2-dev libsqlite3-dev python3-dev libxml2-dev libffi-dev libssl-dev libxslt1-dev \
-#     && cd / && wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz \
-#     && tar -zxvf Python-3.7.7.tgz \
-#     && cd Python-3.7.7 && ./configure --enable-loadable-sqlite-extensions \
-#     && make && make install \
-#     && cd .. && rm -rf Python-3.7.7 \
-#     && apt-get clean \
-#     && apt-get autoclean \
-#     && rm -rf /var/lib/apt/lists/* \
-#     && ln -s /usr/local/bin/pip3 /usr/bin/pip \
-#     && ln -s /usr/local/bin/python3 /usr/bin/python
+#RUN apt-get update \
+#    && apt-get install -y wget gcc make zlib1g-dev libbz2-dev libsqlite3-dev python3-dev libxml2-dev libffi-dev libssl-dev libxslt1-dev nginx \
+#    && cd / && wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz \
+#    && tar -zxvf Python-3.7.7.tgz \
+#    && cd Python-3.7.7 && ./configure --enable-loadable-sqlite-extensions \
+#    && make && make install \
+#    && cd .. && rm -rf Python-3.7.7 \
+#    && apt-get clean \
+#    && apt-get autoclean \
+#    && rm -rf /var/lib/apt/lists/* \
+#    && ln -s /usr/local/bin/pip3 /usr/bin/pip \
+#    && ln -s /usr/local/bin/python3 /usr/bin/python
 
 
 RUN apt-get update \

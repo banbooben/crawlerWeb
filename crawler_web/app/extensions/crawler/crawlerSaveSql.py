@@ -20,27 +20,18 @@
 
 """
 
-
-
-
 import abc
-import time
 import uuid
-from queue import Queue
 from threading import Thread
-from flask import current_app
-
+from app.common.application import cache
 
 
 class CrawlerBase(object):
-    queueA = Queue()  # 网页连接
-    queueB = Queue()  # 下载的网页数据
-    queueC = Queue()  # 抽取得到的结果
 
     def __init__(self, start_url, timeout=60):
         self.start_url = self.create_start_utl(start_url)
         self.timeout = timeout
-        self.uuid = uuid.uuid1()
+        self.uuid = uuid.uuid4()
 
     def create_start_utl(self, start_url):
         return start_url
@@ -69,6 +60,10 @@ class CrawlerBase(object):
     def get_messageA(self):
         try:
             while True:
+                # messageA = self.queueA.get(timeout=self.timeout)
+                # down_process = Thread(target=self.download_page,
+                #                       args=(messageA,))
+                # down_process.start()
                 messageA = self.queueA.get(timeout=self.timeout)
                 down_process = Thread(target=self.download_page,
                                       args=(messageA,))
@@ -102,7 +97,8 @@ class CrawlerBase(object):
             # current_app.logger.error(e)
 
     def put_start_item_in_queue(self):
-        self.queueA.put(self.start_url)
+        # self.queueA.put(self.start_url)
+        cache.lpush()
 
     def start(self):
         try:

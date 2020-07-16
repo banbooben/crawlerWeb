@@ -9,8 +9,7 @@
 import threading
 import time
 from functools import wraps
-from flask import current_app
-from app.application import logger
+from app.common.application import logger
 
 # def Singleton(cls):
 #     """

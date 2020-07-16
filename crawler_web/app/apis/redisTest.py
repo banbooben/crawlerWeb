@@ -5,9 +5,7 @@
 # @Site    : 
 # @File    : redisTest.py
 
-from flask import request, current_app, render_template
 from flask_restful import Resource
-from ..application import aria2_downloader, logger, cache_redis
 
 
 class RedisTest(Resource):

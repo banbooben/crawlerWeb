@@ -6,16 +6,10 @@
 # @Time    : 2020/5/26 14:47
 # @desc:
 
-from flask import request, current_app
+from flask import request
 from flask_restful import Resource
 
-from app.application import cache
-
-from app.extensions.crawler import *
-from app.extensions.mysql.mysql_protogenesis import PyMysql
-from app.application import db, logger
-from app.models import *
-from app.conf.server_conf import get_mysql_info, current_environment
+from app.common.application import logger, cache
 
 # USER, PASSWORD, HOST, PORT, DATABASE = get_mysql_info(current_environment)
 
@@ -43,10 +37,9 @@ class TestApi(Resource):
         # for sql_str in res:
         #     print(sql_str[0])
         # # current_app.logger.info(res)
-        # cache.set("test", "123123123123")
+        cache.set("test", "123123123123")
         #
-        # res = cache.get('test')
+        res = cache.get('test')
         # res = current_app.config["CACHE_TYPE"]
-        res = ""
         logger.info("test")
         return {"code": 200, "mes": "OK", "data": str(res)}
