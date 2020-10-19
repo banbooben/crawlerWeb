@@ -14,15 +14,17 @@ from extensions.crawler.crawler import CrawlerBase
 import requests
 import lxml.html
 import re
+import os
 from fake_useragent import UserAgent
 
 
 class HtmlItem(object):
-    ua = UserAgent(verify_ssl=False)
+    # ua = UserAgent(path=os.path.join(os.getcwd(), "fake_useragent_0.1.11.json"))
 
     def __init__(self, url: str, headers=None, proxy=None):
         self.url = url
-        self.headers = {"User-Agent": self.ua.random}
+        # self.headers = {"User-Agent": self.ua.random}
+        self.headers = {}
         self.proxy = proxy
         self.name = None
         self.classify = None

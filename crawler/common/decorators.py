@@ -73,50 +73,50 @@ class Decorator(object):
 
         return _wrap
 
-#     @classmethod
-#     def serializes(cls, func):
-#         def serialize(item):
-#             result = {}
-#             keys = [key for key in dir(item) if not key.startswith("__")]
-#             for key in keys:
-#                 result[key] = eval(f"""item.{repr(key).strip("'")}""")
-#             return repr(result)
-#
-#         @wraps(func)
-#         def _wrap(*args, **kwargs):
-#             new_args = []
-#             item = serialize(*args, **kwargs)
-#             new_args.extend(args)
-#             new_args.append(item)
-#             args = tuple(new_args)
-#             rst = func(*args, **kwargs)
-#             return rst
-#
-#         return _wrap
-#
-#     @classmethod
-#     def deserializes(cls, func):
-#         def deserialization(item, result, *args, **kwargs):
-#             obj = item(*args, **kwargs)
-#             keys = [key for key in dir(item(*args, **kwargs)) if not key.startswith("__")]
-#             key_value = eval(result)
-#             for key in keys:
-#                 value = key_value.get(key, None)
-#                 if value:
-#                     setattr(obj, key, value)
-#             return obj
-#
-#         @wraps(func)
-#         def _wrap(*args, **kwargs):
-#             new_args = []
-#             var_item = deserialization(*args, **kwargs)
-#             new_args.extend(args)
-#             new_args.append(var_item)
-#             args = tuple(new_args)
-#             rst = func(*args, **kwargs)
-#             return rst
-#
-#         return _wrap
+    # @classmethod
+    # def serializes(cls, func):
+    #     def serialize(item):
+    #         result = {}
+    #         keys = [key for key in dir(item) if not key.startswith("__")]
+    #         for key in keys:
+    #             result[key] = eval(f"""item.{repr(key).strip("'")}""")
+    #         return repr(result)
+    #
+    #     @wraps(func)
+    #     def _wrap(*args, **kwargs):
+    #         new_args = []
+    #         item = serialize(*args, **kwargs)
+    #         new_args.extend(args)
+    #         new_args.append(item)
+    #         args = tuple(new_args)
+    #         rst = func(*args, **kwargs)
+    #         return rst
+    #
+    #     return _wrap
+    #
+    # @classmethod
+    # def deserializes(cls, func):
+    #     def deserialization(item, result, *args, **kwargs):
+    #         obj = item(*args, **kwargs)
+    #         keys = [key for key in dir(item(*args, **kwargs)) if not key.startswith("__")]
+    #         key_value = eval(result)
+    #         for key in keys:
+    #             value = key_value.get(key, None)
+    #             if value:
+    #                 setattr(obj, key, value)
+    #         return obj
+    #
+    #     @wraps(func)
+    #     def _wrap(*args, **kwargs):
+    #         new_args = []
+    #         var_item = deserialization(*args, **kwargs)
+    #         new_args.extend(args)
+    #         new_args.append(var_item)
+    #         args = tuple(new_args)
+    #         rst = func(*args, **kwargs)
+    #         return rst
+    #
+    #     return _wrap
 #
 #
 # @Decorator.serializes

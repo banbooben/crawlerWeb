@@ -31,6 +31,7 @@ class RedisPool(object):
                                     decode_responses=self.decode_responses)
 
 
+@singleton
 class Redis(object):
     def __init__(self, connect_pool, cache_db=0):
         self.connect_pool = connect_pool

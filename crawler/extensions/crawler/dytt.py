@@ -11,36 +11,39 @@ from flask import current_app
 import requests
 import lxml.html
 import re
+import os
 import json
 from fake_useragent import UserAgent
 
-from conf.extensions_conf import dyttUrl
+from conf.extensions_conf import dyttUrl, fake_useragent_file_path
 # from extensions.crawler.crawler import CrawlerBase
 from extensions.crawler.crawlerSaveSql import CrawlerBase
 from extensions import cache
 from conf.myLog import logger
 from common.common_func import serialize, deserialization
+from common.my_dict import MyDict
+from pathlib import Path
 
-ua = UserAgent(verify_ssl=False)
+
+# ua = UserAgent(path=os.path.join(os.getcwd(), "fake_useragent_0.1.11.json"))
 
 
 class DyHeavenCrawler(CrawlerBase, ABC):
-    class Default(object):
+    crawler_item = MyDict()
 
-        def __init__(self, url: str, proxy=None):
-            self.url = url
-            self.headers = "None"
-            self.proxy = proxy
-            self.name = "None"
-            self.classify = "None"
-            self.title = "None"
-            self.date = "None"
-            self.size = "None"
-            self.introduction = "None"
-            self.magnet = "None"
-            self.content = "None"
-            self.type = "0"
-            self.xpath_obj = "None"
+    redis_key_timeout = 604800
+
+    crawler_item.url = "url"
+    crawler_item.name = "None"
+    crawler_item.classify = "None"
+    crawler_item.title = "None"
+    crawler_item.date = "None"
+    crawler_item.size = "None"
+    crawler_item.introduction = "None"
+    crawler_item.magnet = "None"
+    crawler_item.content = "None"
+    crawler_item.type = "0"
+    crawler_item.xpath_obj = "None"
 
     """
     queueA: 存放需要请求的url对象
@@ -50,10 +53,11 @@ class DyHeavenCrawler(CrawlerBase, ABC):
     # def create_start_utl(self, start_url):
     #     return serialize(HtmlItem())
 
-    def merger_result(self, item: Default):
+    def merger_result(self, item):
         """
         获取下一页的网页地址等
         """
+        item = MyDict(item)
         try:
             item_res = {
                 "url": item.url,
@@ -62,16 +66,17 @@ class DyHeavenCrawler(CrawlerBase, ABC):
                 "size": item.size,
                 "magnet": item.magnet
             }
+            self.result.append(item_res)
             # if item.url in cache.keys() and item_res == cache.get(item.url):
             #     self.result.append(cache.get(item.url))
             # else:
             #     cache.set(item.url, json.dumps(item_res, ensure_ascii=False))
-            self.res
+            # self.res
         except Exception as e:
             logger.error("merger_result:  {}".format(e))
             # current_app.logger.error("merger_result:  {}".format(e))
 
-    def download_page(self, item: Default):
+    def download_page(self, item):
         """
         获取下一页的网页地址等
         根据当前状态标记新的状态
@@ -79,14 +84,23 @@ class DyHeavenCrawler(CrawlerBase, ABC):
         1：全局列表页面
         2: 抽取下载连接
         """
+        item = MyDict(item)
         try:
+            print(f" download_page info: {item.url}")
             logger.info("开始下载网页！{}。类型：{}".format(item.url, item.type))
             # current_app.logger.info("开始下载网页！{}。类型：{}".format(item.url, item.type))
             old_type = item.type
-            if item.url:
-                html_obj = requests.get(item.url, params={"User-Agent": ua.random})
+            if item.url != "None" and not cache.get(item.url):
+                # if item.url != "None":
+                html_obj = requests.get(item.url, headers=self.headers)
                 html_str = html_obj.content.decode("gbk")
                 item.content = html_str
+                print(len(html_str))
+
+                # 请求结果存入redis数据库
+                cache.set(item.url, html_str)
+                cache.expire(item.url, self.redis_key_timeout)
+
                 # item.xpath_obj = lxml.html.fromstring(html_str)
             logger.info("下载前类型：{}， 下载后类型：{}".format(old_type, item.type))
             self.push_item_in_redis_list(self.message_b, item)
@@ -94,21 +108,20 @@ class DyHeavenCrawler(CrawlerBase, ABC):
             logger.error("download_page:  {}".format(e))
             # current_app.logger.error("download_page:  {}".format(e))
 
-    def primary(self, item: Default):
+    def primary(self, item):
         """
         抽取主方法，抽取连接等所需要等内容
         """
+        item = MyDict(item)
         try:
-            logger.info("开始抽取：{}".format(item.type))
+            logger.info("开始抽取：{}".format(item.url))
             xpath_obj = lxml.html.fromstring(item.content)
             # current_app.logger.info("开始抽取：{}".format(item.type))
             if item.type == "1":
                 try:
 
                     tables = xpath_obj.xpath("//div[@class='bd3']//div[@class='co_content8']/ul//table")
-                    # print(len(tables))
-                    # re_str = r'"(.*?)" class="ulink" title="(.*?)">.*?>日期：([\d\.\-/]{10}).*?">"◎(.*?)"'
-                    # print(re.findall(re_str, item.content))
+                    print(len(tables))
                     for table in tables:
                         # URL抽取
                         url = table.xpath(".//tr[2]//a/@href")
@@ -116,9 +129,9 @@ class DyHeavenCrawler(CrawlerBase, ABC):
                             new_url = url[0]
                             if not new_url.startswith("http"):
                                 new_url = dyttUrl + new_url
-                            tr_item = DyHeavenCrawler.Default(new_url)
+                            tr_item = MyDict()
+                            tr_item.url = new_url
                             tr_item.type = "2"
-
                             title = table.xpath(".//tr[2]//a/text()")
                             tr_item.title = title[0] if title else "None"
 
@@ -173,7 +186,11 @@ class DyHeavenCrawler(CrawlerBase, ABC):
                                 new_url = dyttUrl + new_url
                             logger.info("首页抽取抽取到的网址：{}".format(new_url))
                             # current_app.logger.info("首页抽取抽取到的网址：{}".format(new_url))
-                            tr_item = DyHeavenCrawler.Default(new_url)
+                            # tr_item = DyHeavenCrawler.Default(new_url)
+
+                            tr_item = MyDict()
+                            tr_item.url = new_url
+
                             tr_item.type = "1"
                             tr_item.classify = area.xpath(".//div[@class='title_all']/p/span/a/text()")[0]
                             # print("首页抽取抽取到的分类：{}".format(tr_item.classify))
@@ -188,4 +205,5 @@ class DyHeavenCrawler(CrawlerBase, ABC):
 
 if __name__ == "__main__":
     zero_crawler = DyHeavenCrawler(dyttUrl, 20)
-    zero_crawler.start()
+    res = zero_crawler.start()
+    print(res)

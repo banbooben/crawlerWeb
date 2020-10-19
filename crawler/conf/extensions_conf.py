@@ -9,6 +9,9 @@
 HTTP_HOST = '0.0.0.0'
 HTTP_PORT = 9527
 
+# header config
+fake_useragent_file_path = "/Users/sarmn/import_files/fake_useragent_0.1.11.json"
+
 # aria config
 aria_host = "127.0.0.1"
 aria_port = "6800"
