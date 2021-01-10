@@ -32,5 +32,5 @@ def test():
 
 
 if __name__ == "__main__":
-    # app.run(host=HTTP_HOST, port=HTTP_PORT, debug=True)
-    manager.run()
+    app.run(host=HTTP_HOST, port=HTTP_PORT, debug=True)
+    # manager.run()

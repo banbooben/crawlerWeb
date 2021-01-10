@@ -21,24 +21,23 @@ class PyMysql(object):
         self.password = password
         self.db = db
         self.charset = charset
+        self._connect_and_get_cursor()
         # self.cursorclass = pymysql.cursors.DictCursor
         # self.connection, self.cursor = self._connectAndGetCursor()
 
     def __enter__(self):
-        pass
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        self.close()
 
     @Decorator.time_func
-    def connectAndGetCursor(self):
+    def _connect_and_get_cursor(self):
         """
         创建连接并初始化游标
         :return: 
         """
         try:
-            print(self.host, self.port, self.user, self.password, self.db,
-                  self.charset)
             connection = pymysql.connect(host=self.host,
                                          port=self.port,
                                          user=self.user,
@@ -46,63 +45,55 @@ class PyMysql(object):
                                          db=self.db,
                                          charset=self.charset)
             cursor = connection.cursor()
-            return connection, cursor
+            self.connection, self.cursor = connection, cursor
         except Exception as e:
             logger.error(e)
             return "None", "None"
 
     @Decorator.time_func
-    def executeByInsOrUpdOrDel(self,
-                               connection,
-                               cursor,
-                               sql: str,
-                               values=None):
+    def _execute_by_select(self,
+                           sql: str):
         """
         执行单个sql语句
-        :param connection: 数据库连接对象
-        :param cursor: mysql游标
         :param sql: 要执行的sql语句
-        :param values: 需要插入的数据
         :return: 
         """
         try:
-            res = []
-            if connection and cursor and sql:
-                if values:
-                    if isinstance(values, tuple):
-                        cursor.execute(sql, values)
-                    elif isinstance(values, list):
-                        cursor.executemany(sql, values)
-                    connection.commit()
-                    res = cursor.fetchall()
-                    logger.info("操作成功")
-                    logger.info("执行结果：{}".format(res))
-                    return res
-                logger.info("错误：")
-                return res
-            logger.info("None")
-            return res
-        except Exception as e:
-            logger.error("操作失败：{}".format(e))
-            connection.roback()
-            return None
-
-    @Decorator.time_func
-    def executeBySelect(self, connection, cursor, sql: str):
-        try:
 
             res = []
-            if connection and cursor and sql:
-                cursor.execute(sql)
-                res = cursor.fetchall()
-                logger.info("操作成功")
-                logger.info("执行结果：{}".format(res))
-                return res
-            logger.info("缺少关键参数")
+            if self.cursor and sql:
+                self.cursor.execute(sql)
+                res = self.cursor.fetchall()
+            self.connection.commit()
             return res
         except Exception as e:
-            logger.error(e)
+            print(e)
             return []
+
+    def close(self):
+        try:
+            if self.connection.ping():
+                self.cursor.close()
+                self.connection.close()
+        except Exception as e:
+            print(e)
+
+    # @Decorator.time_func
+    # def executeBySelect(self, connection, cursor, sql: str):
+    #     try:
+    #
+    #         res = []
+    #         if connection and cursor and sql:
+    #             cursor.execute(sql)
+    #             res = cursor.fetchall()
+    #             logger.info("操作成功")
+    #             logger.info("执行结果：{}".format(res))
+    #             return res
+    #         logger.info("缺少关键参数")
+    #         return res
+    #     except Exception as e:
+    #         logger.error(e)
+    #         return []
 
     # @Decorator.time_func
     # def executemanyByInsertOrUpdate(self, connection, cursor, sql: str,

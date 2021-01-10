@@ -53,9 +53,9 @@ class DevelopConfig(Config):
 
     # 缓存
     CACHE_TYPE = 'redis'
-    CACHE_REDIS_HOST = '127.0.0.1'
+    CACHE_REDIS_HOST = '100.100.21.123'
     CACHE_REDIS_PORT = 63791
-    CACHE_REDIS_DB = 1
+    CACHE_REDIS_DB = 0
     DECODE_RESPONSES = True
     CACHE_REDIS_PASSWORD = 123456
     # decode_responses = True

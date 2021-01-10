@@ -46,4 +46,5 @@ def get_redis_config(var_data):
     decode_responses = var_data.DECODE_RESPONSES
     redis_password = var_data.CACHE_REDIS_PASSWORD
     cache_type = var_data.CACHE_TYPE
-    return host, port, database, decode_responses, redis_password, cache_type
+    return {"host": host, "port": port, "db": database, "decode_responses": decode_responses,
+            "password": redis_password, }

@@ -59,7 +59,7 @@ class CrawlerBase(object):
         self.message_b = str(self.uuid) + "_messageB"
         self.message_c = str(self.uuid) + "_messageC"
         self.crawler_item.headers = self.headers
-        self.crawler_item.proxy = self.proxy
+        # self.crawler_item.proxy = self.proxy
 
     # @staticmethod
     def create_start_utl(self, start_url):
