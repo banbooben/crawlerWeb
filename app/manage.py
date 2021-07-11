@@ -7,18 +7,22 @@
 # @LastEditTime: 2020-09-02 22:33:32
 # @FilePath: /crawlerWeb/crawler/manage.py
 
-# from flask_migrate import Manager
 from flask_script import Manager
+
 from flask_migrate import MigrateCommand
 from flask import jsonify, render_template
 from initialization import init_app
-from conf.server_conf import current_environment
-from conf.extensions_conf import HTTP_HOST, HTTP_PORT
+from config.extensions_conf import HTTP_HOST, HTTP_PORT
 
-app = init_app(current_environment)
+from initialization.application import logger
+from initialization.error_process import ExtractException
+
+# app, celery = init_app(current_environment)
+# app = init_app(current_environment)
+app = init_app()
+# app.app_context().push()
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
 
 @app.route("/")
 def index():

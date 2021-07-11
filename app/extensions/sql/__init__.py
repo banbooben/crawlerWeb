@@ -7,7 +7,7 @@
 # @desc: 
 
 
-from .redis_protogenesis import Redis, RedisPool
+from .redis_protogenesis import Redis
 
 
 

@@ -1,0 +1,15 @@
+version: "3"
+services:
+  lnpy37:
+    image: flaskr:release_20210108194033
+    environment:
+      WORK_NUMS: 2
+    ports:
+      - 8000:8000
+      - 222:22
+      - 8081:80
+    volumes:
+      - ./error.log:/var/log/nginx.err
+      - ./nginx.log:/var/log/nginx.log
+      - ../../deploy/flask_supervisor_config.conf:/etc/supervisor/conf.d/flask_supervisor_config.conf
+      - ../../deploy/default.conf:/etc/nginx/sites-available/default

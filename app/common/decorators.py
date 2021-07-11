@@ -1,15 +1,15 @@
-#!/usr/local/bin python3
-# -*- coding: utf-8 -*-
-# @Project : crawler_web
-# @File    : decorators.py
-# @Author  : shangyameng@datagrand.com
-# @Time    : 2020/5/23 22:50
-# @desc:
+#!/usr/bin/env python
+
+# coding:utf-8
+# @Time    : 2020/12/27 0:47
+# @Contact : shangyameng@aliyun.com
+# @Name    : decorators.py
+# @Desc    :
 
 import threading
 import time
 from functools import wraps
-from conf.myLog import logger
+from initialization.logger_process import logger
 
 
 # from .common_func import serialize, deserialization
@@ -72,6 +72,22 @@ class Decorator(object):
             return rst
 
         return _wrap
+
+    # @classmethod
+    # def save_file(cls, func):
+    #     @wraps(func)
+    #     def _wrap(*args, **kwargs):
+    #         from flask import request
+    #         from config.server_conf import current_config
+    #
+    #         for item in request.files:
+    #             item = request.files[item]
+    #             fine_name = item.filename
+    #
+    #         res = func(*args, **kwargs)
+    #         return res
+    #
+    #     return _wrap
 
     # @classmethod
     # def serializes(cls, func):

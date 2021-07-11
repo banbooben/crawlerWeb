@@ -1,7 +1,7 @@
 #!/usr/local/bin python3
 # -*- coding: utf-8 -*-
 # @Time    : 2020/9/2 17:31
-# @Author  : shangyameng@datagrand.com
+# @Author  : shangyameng
 # @Site    : 
 # @File    : open_cv.py
 
@@ -10,10 +10,8 @@ import cv2 as cv
 import os
 import random
 import numpy as np
-import pandas as pd
-import logging
 import requests
-from conf.myLog import logger
+from initialization.application import logger
 
 
 class OpenCvBase(object):
@@ -30,7 +28,8 @@ class OpenCvBase(object):
             self.img = cv.imdecode(np.frombuffer(img_byte, np.uint8), cv.IMREAD_COLOR) if img_byte else None
             self.img_path = img_path if img_byte else None
         else:
-            self.img = cv.imread(img_path, cv.IMREAD_UNCHANGED) if os.path.exists(img_path) else None
+            # self.img = cv.imread(img_path, cv.IMREAD_UNCHANGED) if os.path.exists(img_path) else None
+            self.img = cv.imread(img_path) if os.path.exists(img_path) else None
             self.img_path = img_path if os.path.exists(img_path) else None
 
     def show_image(self, img):
@@ -86,7 +85,13 @@ class OpenCvBase(object):
         if save_path == self.img_path:
             save_path_info = self.img_path.rsplit(".", 1)
             save_path = save_path_info[0] + "_save." + save_path_info[1]
-        cv.imwrite(save_path, img, [cv.IMWRITE_JPEG_QUALITY, 100])
+        try:
+            cv.imwrite(save_path, img, [cv.IMWRITE_JPEG_QUALITY, 100])
+            status = True
+        except Exception as e:
+            self.logger.exception(e)
+            status = False
+        return status, save_path
 
 
 class OpenCv(OpenCvBase):
@@ -94,7 +99,9 @@ class OpenCv(OpenCvBase):
     def cut_and_save_image(self, img_path, save_path, x=-1, y=-1, add_x=-1, add_y=-1):
         self.load_image(img_path)
         new_image = self.cut_image(x=x, y=y, add_x=add_x, add_y=add_y)
-        self.save_image(new_image, save_path)
+        # self.show_image(new_image)
+        status = self.save_image(new_image, save_path)
+        return status
 
     def bian_jie_jian_ce(self, img_path):
         self.load_image(img_path)
@@ -103,18 +110,43 @@ class OpenCv(OpenCvBase):
         canny = cv.Canny(img, 50, 150)
         self.show_image(canny)
 
+    def get_image_shape_info(self, img_path):
+        self.load_image(img_path)
+        if isinstance(self.img, np.ndarray):
+            shape = self.img.shape
+        else:
+            shape = (0, 0, 0)
+        return shape
+
+    def get_a(self, img_path, save_path, x=-1, y=-1, add_x=-1, add_y=-1):
+        from PIL import Image
+        img = Image.open(img_path)
+        print(img.size)  # (1920, 1080)
+        cropped = img.crop((52, 270, 510, 398))  # (left, upper, right, lower)
+        cropped.save(save_path)
+
 
 if __name__ == '__main__':
-    image_path = "/Users/sarmn/Nextcloud/pic/长发少女黑色吊带裙.jpg"
+    # image_path = "/Users/sarmn/Nextcloud/pic/长发少女黑色吊带裙.jpg"
+    image_path = "/Users/sarmn/work_speace/gtja_4/gtja_futures/gtja_api/app/extensions/extract_process/test/serialized/38_617ee394-5b05-11eb-8934-02420a042dab_all/38_617ee394-5b05-11eb-8934-02420a042dab_all_0.png"
     new_path = "/Users/sarmn/Nextcloud/pic/a.jpg"
     url = "http://ysocr.datagrand.cn/file/64903057-d17d-4f72-8e1b-ae03e12f96e5_page1_detection.jpg"
 
     my_cv = OpenCv()
-    my_cv.bian_jie_jian_ce(url)
+    # my_cv.bian_jie_jian_ce(url)
+    my_cv.load_image(image_path)
+    my_cv.show_image(my_cv.img)
+    exit()
+    res = my_cv.get_image_shape_info(new_path)
+    print(res)
+    height = res[1]
+    res = height // 10
+
+    # my_cv.bian_jie_jian_ce(url)
     # my_cv.load_image(url)
     # my_cv.show_image()
     # new_img = my_cv.cut_image(0, 0, 1500, 1500)
     # my_cv.save_image(img=new_img)
     # my_cv.cut_and_save_image(image_path, new_path, y=30, add_y=500)
 
-    print("ok")
+    print(res)

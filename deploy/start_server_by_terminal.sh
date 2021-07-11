@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd ../crawler/ && python3 manage.py runserver -d -r --threaded
+cd ../data/flaskr/ && python3 manage.py runserver -d -r --threaded

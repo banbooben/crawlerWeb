@@ -1,0 +1,17 @@
+FROM  python:3.9.4-slim
+#FROM python:3.8.7
+
+#RUN yum update -y
+RUN echo "export LANG=zh_CN.UTF-8" >> /etc/locale.conf \
+    && cd / && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+RUN apt-get update -y
+RUN apt-get install -y nginx wget vim curl gcc procps
+
+ENV LANG=zh_CN.UTF-8 \
+    LC_ALL=zh_CN.UTF-8 \
+    LANGUAGE=zh_CN.UTF-8 \
+    ENVIRONMENT=DOCKER_PROD \
+    PYTHONIOENCODING=utf-8
+
+CMD nginx -g "daemon off;"

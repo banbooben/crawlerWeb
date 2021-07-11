@@ -1,39 +1,27 @@
-FROM lnpy3:latest
+FROM lnpy39:slim
 
-RUN mkdir /crawler_web
-WORKDIR /crawler_web
-COPY ./docker_app/ /crawler_web/
+ENV PROJECT_NAME "flaskr"
 
-#RUN apt-get update \
-#    && apt-get install -y wget gcc make zlib1g-dev libbz2-dev libsqlite3-dev python3-dev libxml2-dev libffi-dev libssl-dev libxslt1-dev nginx \
-#    && cd / && wget https://www.python.org/ftp/python/3.7.7/Python-3.7.7.tgz \
-#    && tar -zxvf Python-3.7.7.tgz \
-#    && cd Python-3.7.7 && ./configure --enable-loadable-sqlite-extensions \
-#    && make && make install \
-#    && cd .. && rm -rf Python-3.7.7 \
-#    && apt-get clean \
-#    && apt-get autoclean \
-#    && rm -rf /var/lib/apt/lists/* \
-#    && ln -s /usr/local/bin/pip3 /usr/bin/pip \
-#    && ln -s /usr/local/bin/python3 /usr/bin/python
+RUN mkdir /${PROJECT_NAME}
+WORKDIR /${PROJECT_NAME}/app
+COPY ./${PROJECT_NAME} /${PROJECT_NAME}
 
 
-#RUN apt-get update \
-#    && mkdir -p /var/www/html \
-#    && apt-get install -y python3.7 \
-#                        python3-dev \
-#                        python3-pip \
-#                        nginx \
-#    && apt-get clean \
-#    && apt-get autoclean \
-#    && rm -rf /var/lib/apt/lists/*
+# 安装supervisor
+#RUN apt-get install -y supervisor\
+#    && mkdir -p /var/log/supervisor \
+#    && cp /${PROJECT_NAME}/deploy/flask_supervisor_config.conf /etc/supervisor/conf.d/flask_supervisor_config.conf
+#
 
-RUN chmod -R 777 /crawler_web/ && cd /crawler_web
-RUN pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN chmod -R 777 /${PROJECT_NAME}/ \
+    && pip3 install --no-cache-dir -r /${PROJECT_NAME}/deploy/requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+#    && pip3 install --no-cache-dir -r /${PROJECT_NAME}/deploy/requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 
-RUN mv ./default /etc/nginx/sites-available/default
-#    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
+RUN mv /${PROJECT_NAME}/deploy/default.conf /etc/nginx/sites-available/default
+#    && ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default \
 #    && /usr/sbin/nginx -s reload
 
-#CMD python3 /crawler_web/manage.py runserver -h 0.0.0.0 -p 5000 --threaded
-CMD sh /crawler_web/init_database.sh && uwsgi --ini /crawler_web/uwsgi.ini && nginx -g "daemon off;"
+#CMD python3 /${PROJECT_NAME}/manage.py runserver -h 0.0.0.0 -p 5000 --threaded
+#CMD sh /${PROJECT_NAME}/init_database.sh && uwsgi  --ini /${PROJECT_NAME}/uwsgi.ini && nginx -g "daemon off;"
+#CMD /usr/bin/supervisord
+CMD sh /flaskr/deploy/docker_start_command.sh
