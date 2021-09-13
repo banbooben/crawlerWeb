@@ -15,7 +15,7 @@ from flask_jwt_extended import verify_jwt_in_request
 from flask_jwt_extended.exceptions import JWTExtendedException
 
 
-from utils.custom_response import CustomResponse
+from initialization.application import custom_response_
 
 
 class JWTProcess(object):
@@ -63,7 +63,7 @@ class JWTProcess(object):
             @attention: 提示
             """
             # return ucr.op_fail(str(error), status=401), 401
-            return CustomResponse.response(str(error), code=401), 401
+            return custom_response_.response(str(error), code=401), 401
 
 
 class JWTManager(_JWTManager):

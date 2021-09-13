@@ -30,7 +30,7 @@ class Logger(object):
                  log_name=time.strftime("%Y-%m-%d.log", time.localtime()),
                  log_path=(pathlib.Path().cwd()/"logs").absolute(),
                  use_console=True,
-                 save_file=True):
+                 save_file=False):
         """
         Args:
             set_level: 日志级别["NOTSET"|"DEBUG"|"INFO"|"WARNING"|"ERROR"|"CRITICAL"]，默认为INFO
@@ -100,16 +100,16 @@ class Logger(object):
             self._log(CRITICAL, msg, args, **kwargs)
 
 
-# logger = Logger()
-if __name__ == '__main__':
-    # from pathlib import Path
-    #
-    # local_path = Path().cwd()
-    # my_log_root = local_path.parent.parent / "logs"
-
-    # res = my_log_root.absolute()
-    # res = (pathlib.Path().cwd()/"logs").absolute()
-    # res = os.system("pwd")
-    # res = Logger(log_path=pathlib.Path().cwd().parent.parent / "logs")
-    res = ""
-    print(res)
+logger = Logger()
+# if __name__ == '__main__':
+#     # from pathlib import Path
+#     #
+#     # local_path = Path().cwd()
+#     # my_log_root = local_path.parent.parent / "logs"
+#
+#     # res = my_log_root.absolute()
+#     # res = (pathlib.Path().cwd()/"logs").absolute()
+#     # res = os.system("pwd")
+#     # res = Logger(log_path=pathlib.Path().cwd().parent.parent / "logs")
+#     res = ""
+#     print(res)

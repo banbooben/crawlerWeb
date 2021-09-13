@@ -15,11 +15,11 @@ import os
 import json
 from fake_useragent import UserAgent
 
-from conf.extensions_conf import dyttUrl, fake_useragent_file_path
+from config.extensions_conf import dyttUrl, fake_useragent_file_path
 # from extensions.crawler.crawler import CrawlerBase
 from extensions.crawler.crawlerSaveSql import CrawlerBase
-from extensions import cache
-from conf.myLog import logger
+# from extensions import cache
+from initialization.base_logger_process import logger
 from common.common_func import serialize, deserialization
 from common.my_dict import MyDict
 from pathlib import Path

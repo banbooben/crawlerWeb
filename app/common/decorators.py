@@ -9,7 +9,7 @@
 import threading
 import time
 from functools import wraps
-from initialization.logger_process import logger
+from initialization.application import logger
 
 
 # from .common_func import serialize, deserialization
@@ -73,21 +73,16 @@ class Decorator(object):
 
         return _wrap
 
-    # @classmethod
-    # def save_file(cls, func):
-    #     @wraps(func)
-    #     def _wrap(*args, **kwargs):
-    #         from flask import request
-    #         from config.server_conf import current_config
-    #
-    #         for item in request.files:
-    #             item = request.files[item]
-    #             fine_name = item.filename
-    #
-    #         res = func(*args, **kwargs)
-    #         return res
-    #
-    #     return _wrap
+    @classmethod
+    def add_request_id(cls, func):
+        @wraps(func)
+        def _wrap(*args, **kwargs):
+            from flask import request
+            rst = func(*args, **kwargs)
+            rst.update({"request_id": request.request_id})
+            return rst
+
+        return _wrap
 
     # @classmethod
     # def serializes(cls, func):

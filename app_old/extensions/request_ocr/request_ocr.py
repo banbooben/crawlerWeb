@@ -15,9 +15,9 @@ import uuid
 from PIL import Image, ImageGrab
 import copy
 
-from app.conf import logger
-from app.conf.api_config import orientation
-from app.extensions.opencv.open_cv import OpenCv
+from app_old.conf import logger
+from app_old.conf.api_config import orientation
+from app_old.extensions.opencv.open_cv import OpenCv
 
 
 class RequestOcr(object):

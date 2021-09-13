@@ -1,45 +1,64 @@
-#!/usr/bin python3
-# -*- coding: utf-8 -*-
-
-# @Author: shangyameng
-# @Email: shangyameng@aliyun.com
-# @Date: 2020-04-08 22:56:46
-# @LastEditTime: 2020-09-01 22:33:59
-# @FilePath: /crawlerWeb/crawler_web/blueprint_modules/__init__.py
-
-from flask_restful import Api
-
-from .crawlers import crawler_api
-from .test import test_api
-from .aria import aria_api
-# 注册蓝本：在看得见app的地方
-from route.aria_route import aria
-from route.auth import auth
-
-# 配置路由地址
-"""
-原理：
-api.add_resource(resource, url)
-1、将创建的接口类注册到app中
-"""
-
-DEFAULT_RESOURCE = (aria_api, crawler_api, test_api)
-# default_resource = (aria_api, crawler_api, test_api)
-
-# 注册时也可以指定相关的蓝本参数，优先级高于创建时的参数
-ALL_BLUEPRINT = (
-    aria,
-    auth,
-)
+# !/usr/bin/env python
+# coding:utf-8
+# @Time    : 2020/12/26 11:47 下午
+# @Contact : shangyameng
+# @Name    : __init__.py.py
+# @Desc    :
 
 
-def config_resource(app):
+from flask_restful import Api as _Api
+
+from initialization.base_error_process import register_blueprint_error
+from initialization.base_request_process import init_bp_hook_function
+from initialization.application import logger
+
+import os
+
+import importlib
+
+
+def load_all_resource_and_blueprint():
+    """
+    加载当前文件夹下所有的路由和蓝本
+    """
+    all_modules = []
+    default_dirs = "apis"
+    for root, dirs, files in os.walk(default_dirs):
+        for _dir in dirs:
+            if _dir in ["__pycache__"]:
+                continue
+            abs_file_path = root + "/" + _dir
+            module = importlib.import_module(abs_file_path.replace("/", "."))
+            importlib.reload(module)
+            try:
+                registry = getattr(module, 'registry')
+                enable = getattr(module, 'enable')
+                if enable:
+                    all_modules.append(registry)
+            except Exception as e:
+                logger.exception(e)
+    return all_modules
+
+
+class Api(_Api):
+    def handle_error(self, e):
+        raise e
+
+
+def register_resource_and_blueprint(app):
     api = Api(app)
-    for blueprint_api in DEFAULT_RESOURCE:
-        for resource, url in blueprint_api:
+    bp = None
+    all_resource_and_blueprint = load_all_resource_and_blueprint()
+    for bp_obj in all_resource_and_blueprint:
+        if api_bp := bp_obj.get("BLUEPRINT", None):
+            api = Api(api_bp)
+            bp = api_bp
+
+        for api_info in bp_obj.get("RESOURCE", ()):
+            resource, url = api_info[0], api_info[1]
             api.add_resource(resource, url)
 
-
-def route_extensions(app):
-    for item in ALL_BLUEPRINT:
-        app.register_blueprint(item, url_prefix="/{}".format(item.name))
+        if bp:
+            app.register_blueprint(bp, url_prefix=f"/api/{bp.name}")
+            register_blueprint_error(bp)
+            init_bp_hook_function(bp)

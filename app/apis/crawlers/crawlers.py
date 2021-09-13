@@ -10,7 +10,7 @@ from flask import request, current_app
 from flask_restful import Resource
 
 from extensions.crawler import *
-from conf.myLog import logger
+from initialization.base_logger_process import logger
 from models import *
 
 
@@ -22,7 +22,7 @@ class CrawlerAPI(Resource):
         number, result = crawlerProcess(start_url).start()
         logger.info("start write info to mysql")
         # self.write_to_mysql(result, dyHeaven_fields, DyHeaven)
-        print("数据库字段：{}".format(dyHeaven_fields))
+        # print("数据库字段：{}".format(dyHeaven_fields))
         logger.info("抽取到的结果：{}".format(result))
 
         return number, result
