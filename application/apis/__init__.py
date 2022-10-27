@@ -43,8 +43,8 @@ class RegisterBlueprint(object):
             for _dir in [_dir for _dir in dirs if not _dir.startswith("__")]:
                 abs_file_path = f"application/apis/{_dir}"
                 module = importlib.import_module(abs_file_path.replace("/", "."))
-                importlib.reload(module)
                 try:
+                    importlib.reload(module)
                     bp_init = getattr(module, 'BPInit')
                     if bp_init.enable:
                         self.all_modules.append(bp_init)

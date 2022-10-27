@@ -28,11 +28,12 @@ from functools import wraps
 from fake_useragent import UserAgent
 
 
-from extensions import cache
-from conf.myLog import logger
-from common.my_dict import MyDict
-from conf.extensions_conf import fake_useragent_file_path
-from common.common_func import deserialization, serialize
+# from extensions import cache
+from application.tools.redis_tools import redis_tools_
+from application.initialization.logger_process import logger
+from application.utils.dict2obj import XDict
+from application.config.extensions_conf import fake_useragent_file_path
+# from application.common.common_func import deserialization, serialize
 
 
 # from conf import logger
@@ -41,7 +42,9 @@ from common.common_func import deserialization, serialize
 class CrawlerBase(object):
     result = []
     redis_key_timeout = 604800
-    crawler_item = MyDict()
+
+    # redis_tools_ = Redis()
+    crawler_item = XDict()
     crawler_item.url = ""
     ua = UserAgent(path=fake_useragent_file_path)
 
@@ -91,7 +94,7 @@ class CrawlerBase(object):
         try:
             index = 0
             while True:
-                message = cache.rpop(key)
+                message = redis_tools_.rpop(key)
                 if message:
                     logger.info(f"{key}, message{message}")
                     # message = deserialization(self.__cls__().Default, message, url="default")
@@ -120,7 +123,7 @@ class CrawlerBase(object):
         # serialize_str = serialize(item)
         if not isinstance(item, str):
             item = repr(item)
-        cache.lpush(key, item)
+        redis_tools_.lpush(key, item)
 
     @classmethod
     def __cls__(cls):

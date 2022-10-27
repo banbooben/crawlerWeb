@@ -7,10 +7,10 @@
 # @File    : resource_process.py
 # @desc    :
 
-# from flask_restful import Resource
-from flask import request
-from flask_restful import Api as _Api, Resource
-from application.common.decorators import Decorator
+from flask_restful import Resource, Api as _Api
+# from flask import request
+# # from flask_restful import Api as _Api, Resource
+# from application.common.decorators import Decorator
 
 
 class Api(_Api):
