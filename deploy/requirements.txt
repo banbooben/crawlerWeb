@@ -1,6 +1,6 @@
 alembic==1.4.3
 aniso8601==8.1.0
-certifi==2020.12.5
+certifi==2022.12.7
 click==7.1.2
 concurrent-log-handler==0.9.19
 Flask==1.1.2
